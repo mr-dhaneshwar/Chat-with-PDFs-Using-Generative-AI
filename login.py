@@ -10,7 +10,7 @@ def main():
     # Button to send the email
     if st.button("Send Email"):
         if email_address:
-            if sendEmail(email_address,"http://192.168.254.197:8502"):
+            if sendEmail(email_address,"https://chatpdfhome.streamlit.app/"):
                 st.success("Email sent successfully")
             else:
                 st.error("Somthing went wrong pease try again..")
