@@ -78,19 +78,27 @@ def user_input(user_question):
         , return_only_outputs=True)
 
     print(response)
-    st.write("Reply: ", response["output_text"])
+    # st.write("Reply: ", response["output_text"])
+    return response["output_text"]
 
 
 
-
+# history = []
 def main():
     st.set_page_config("Chat PDF")
     st.header("Chat with Lovely PDF ❤️🤖")
-    
-    user_question = st.text_input("Ask a Question from the PDF Files")
-
+    user_question = st.chat_input("Ask a Question from the PDF Files")
+    Q = str(user_question)
+    # history.append(Q)
     if user_question:
-        user_input(user_question)
+        st.write("**👤:** "+Q)
+        A = user_input(user_question)
+        st.write("**🤖:** "+A)
+        # history.append(A)
+    
+    
+    # for msg in history:
+    #     st.write(msg)
 
     with st.sidebar:
         st.title("Menu:")
