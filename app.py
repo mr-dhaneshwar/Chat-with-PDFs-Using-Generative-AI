@@ -9,11 +9,20 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 import streamlit as st
-import os
+from geminiAPI import*
+import os,shutil
+
 
 load_dotenv()
 os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
+def dltfaiss():
+    try:
+        shutil.rmtree("faiss_index")
+    except Exception as e:
+        print(e)
+
 
 def get_pdf_text(pdf_docs):
     text=""
@@ -32,6 +41,7 @@ def get_text_chunks(text):
 
 
 def get_vector_store(text_chunks):
+    dltfaiss()
     embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
     vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
     vector_store.save_local("faiss_index")
@@ -48,6 +58,16 @@ def get_conversational_chain():
     Answer:
     """
 
+    # prompt_template = """
+    # Context:
+    # The answer to the question is found in a PDF document. Please provide the page number where the answer is located.
+    # Context:\n {context}?\n
+    # Question: \n{question}\n
+
+    # Page Number:
+    # """
+
+
     model = ChatGoogleGenerativeAI(model="gemini-pro",
                              temperature=0.3)
 
@@ -59,41 +79,49 @@ def get_conversational_chain():
 
 
 def user_input(user_question):
-    embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
+
+    if os.path.exists("faiss_index"):
+        embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
+        
+        # new_db = FAISS.load_local("faiss_index", embeddings)
+        new_db = FAISS.load_local("faiss_index", embeddings,allow_dangerous_deserialization=True)
+        docs = new_db.similarity_search(user_question)  
+
+        chain = get_conversational_chain()
+
+        
+        response = chain(
+            {"input_documents":docs, "question": user_question}
+            , return_only_outputs=True)
+
+        print(response)
+        # st.write("Reply: ", response["output_text"])
+        return response["output_text"]
     
-    # new_db = FAISS.load_local("faiss_index", embeddings)
-    new_db = FAISS.load_local("faiss_index", embeddings,allow_dangerous_deserialization=True)
-    docs = new_db.similarity_search(user_question)
-
-    chain = get_conversational_chain()
-
-    
-    response = chain(
-        {"input_documents":docs, "question": user_question}
-        , return_only_outputs=True)
-
-    print(response)
-    # st.write("Reply: ", response["output_text"])
-    return response["output_text"]
+    else:
+        return "You Did not provide any PDF, First upload the PDF"
 
 
 
-# history = []
 def main():
+
+    if 'init' not in st.session_state:
+        st.session_state.init = True
+        dltfaiss()
+
     st.set_page_config("Chat PDF")
     st.header("Chat with Lovely PDF ❤️🤖")
     user_question = st.chat_input("Ask a Question from the PDF Files")
     Q = str(user_question)
-    # history.append(Q)
+
     if user_question:
         st.write("**👤:** "+Q)
         A = user_input(user_question)
-        st.write("**🤖:** "+A)
-        # history.append(A)
-    
-    
-    # for msg in history:
-    #     st.write(msg)
+        P = "answer is not available in the context"
+        if "not" and "context" in A:
+            A = A+" you can find it from-->\n"+angel(Q)
+        st.write("**🤖:** ",A)
+
 
     with st.sidebar:
         st.title("Menu:")

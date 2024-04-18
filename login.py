@@ -11,6 +11,7 @@ def main():
     if st.button("Send Email"):
         if email_address:
             if sendEmail(email_address,"https://chatpdfhome.streamlit.app/"):
+            # if sendEmail(email_address,"https://chatpdfhome.streamlit.app/"):
                 st.success("Email sent successfully")
             else:
                 st.error("Somthing went wrong pease try again..")
