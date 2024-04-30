@@ -12,7 +12,7 @@ def main():
     # Button to send the email
     if st.button("Send Email"):
         if email_address:
-            if sendEmail(email_address,"https://chatpdfhome.streamlit.app/"):
+            if send_verification_email(email_address,"https://chatpdfhome.streamlit.app/"):
             # if sendEmail(email_address,"https://chatpdfhome.streamlit.app/"):
                 st.success("Email sent successfully")
             else:
