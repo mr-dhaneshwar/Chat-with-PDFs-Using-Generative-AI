@@ -128,11 +128,12 @@ def main():
     with st.sidebar:
         st.title("Menu:")
         pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True)
-        pdf_docs = perform_ocr(pdf_docs)
-        # for pdf in pdf_docs:
-        #     if not is_soft_copy(pdf):
-        #         pdf_docs = perform_ocr(pdf_docs)
-        #         break
+        # pdf_docs = perform_ocr(pdf_docs)
+        for pdf in pdf_docs:
+            if not is_soft_copy(pdf):
+                # pdf_docs = perform_ocr(pdf_docs)
+                st.error("Performing the OCR function is under maintenance.\nSome of your uploaded files are not readeble please refresh and upload again")
+                break
             
         if st.button("Submit & Process"):
             with st.spinner("Processing..."):
