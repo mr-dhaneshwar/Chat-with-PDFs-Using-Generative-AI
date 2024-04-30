@@ -68,5 +68,5 @@ def send_verification_email(to, verification_link):
         return False
 
 # Example use of send_verification_email
-send_verification_email("prasaddhaneshwar22@gmail.com", "https://chatpdfhome.streamlit.app/")
+# send_verification_email("prasaddhaneshwar22@gmail.com", "https://chatpdfhome.streamlit.app/")
 # sendEmail('prasaddhaneshwar22@gmail.com', 'hii')
