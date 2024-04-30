@@ -1,16 +1,18 @@
+# app.py
+
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain.chains.question_answering import load_qa_chain
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.vectorstores import FAISS
 from langchain.prompts import PromptTemplate
-# from langchain.vectorstores import FAISS
 import google.generativeai as genai
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 import streamlit as st
 from geminiAPI import*
 import os,shutil
+from OCR import *
 
 
 load_dotenv()
@@ -110,7 +112,7 @@ def main():
         dltfaiss()
 
     st.set_page_config("Chat PDF")
-    st.header("Chat with Lovely PDF ❤️🤖")
+    st.header("Chat With PDF By Gemini🤖")
     user_question = st.chat_input("Ask a Question from the PDF Files")
     Q = str(user_question)
 
@@ -126,6 +128,12 @@ def main():
     with st.sidebar:
         st.title("Menu:")
         pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True)
+        pdf_docs = perform_ocr(pdf_docs)
+        # for pdf in pdf_docs:
+        #     if not is_soft_copy(pdf):
+        #         pdf_docs = perform_ocr(pdf_docs)
+        #         break
+            
         if st.button("Submit & Process"):
             with st.spinner("Processing..."):
                 raw_text = get_pdf_text(pdf_docs)

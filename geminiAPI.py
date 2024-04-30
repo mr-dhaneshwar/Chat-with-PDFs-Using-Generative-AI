@@ -1,3 +1,5 @@
+# geminiAPI.py
+
 import google.generativeai as genai
 
 genai.configure(api_key="AIzaSyAZRkCgSxW0YHo8GcGvqRnLBL9Sf8oAC3E")
@@ -41,6 +43,3 @@ def angel(prompt):
     message=convo.last.text
     print(message)
     return message
-
-# A = angel("What is Databse? provide me only website links only related to question.")
-# print(A)
