@@ -83,6 +83,7 @@ def get_conversational_chain():
 def user_input(user_question):
 
     if os.path.exists("faiss_index"):
+
         embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
         
         # new_db = FAISS.load_local("faiss_index", embeddings)
@@ -107,12 +108,12 @@ def user_input(user_question):
 
 def main():
 
-    if 'init' not in st.session_state:
-        st.session_state.init = True
-        dltfaiss()
+    # if 'init' not in st.session_state:
+    #     st.session_state.init = True
+    #     dltfaiss()
 
     st.set_page_config("Chat PDF")
-    st.header("Chat With PDF By Gemini🤖")
+    st.header("Chat With PDF 🤖")
     user_question = st.chat_input("Ask a Question from the PDF Files")
     Q = str(user_question)
 
